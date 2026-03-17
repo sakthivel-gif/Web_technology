@@ -1,0 +1,40 @@
+body{
+margin:0;
+background:white;
+font-family:Segoe UI,Arial;
+color:black;
+}
+
+h1{
+margin-bottom:5px;
+}
+
+h2{
+border-bottom:2px solid black;
+display:inline-block;
+padding-bottom:4px;
+}
+
+iframe{
+box-shadow:0 6px 12px rgba(0,0,0,0.2);
+}
+
+a{
+color:black;
+text-decoration:none;
+font-weight:600;
+}
+
+a:hover{
+text-decoration:underline;
+}
+
+ul{
+padding-left:20px;
+text-align:left;
+display:inline-block;
+}
+
+li{
+margin-bottom:6px;
+}
