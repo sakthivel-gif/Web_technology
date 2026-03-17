@@ -1,0 +1,70 @@
+package com.demo;
+
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet("/hello")
+public class HelloServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 1L;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Hello World Animation</title>");
+
+        out.println("<style>");
+        out.println("body{");
+        out.println("background: linear-gradient(to right,#ff7e5f,#feb47b);");
+        out.println("font-family: Arial;");
+        out.println("text-align:center;");
+        out.println("margin-top:200px;");
+        out.println("}");
+
+        out.println("button{");
+        out.println("padding:15px 30px;");
+        out.println("font-size:20px;");
+        out.println("background:#4CAF50;");
+        out.println("color:white;");
+        out.println("border:none;");
+        out.println("border-radius:10px;");
+        out.println("cursor:pointer;");
+        out.println("}");
+
+        out.println("#msg{");
+        out.println("margin-top:30px;");
+        out.println("font-size:60px;");
+        out.println("color:white;");
+        out.println("opacity:0;");
+        out.println("transition:opacity 1.5s ease-in;");
+        out.println("text-shadow:3px 3px 5px black;");
+        out.println("}");
+        out.println("</style>");
+
+        out.println("<script>");
+        out.println("function showHello(){");
+        out.println("document.getElementById('msg').innerHTML='Hello World';");
+        out.println("document.getElementById('msg').style.opacity='1';");
+        out.println("}");
+        out.println("</script>");
+
+        out.println("</head>");
+        out.println("<body>");
+
+        out.println("<h2>Servlet Animation Demo</h2>");
+        out.println("<button onclick='showHello()'>Click Me</button>");
+        out.println("<div id='msg'></div>");
+
+        out.println("</body>");
+        out.println("</html>");
+    }
+}
