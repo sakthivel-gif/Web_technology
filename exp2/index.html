@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registry System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Helvetica', 'Arial', sans-serif; }
+        
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            border: 3px solid #000000;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            margin-bottom: 60px;
+            box-shadow: 15px 15px 0px #000000;
+        }
+
+        h2 { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            font-weight: 900; 
+            letter-spacing: 5px; 
+            text-transform: uppercase;
+            border-bottom: 3px solid #000;
+            padding-bottom: 10px;
+        }
+
+        .form-group { margin-bottom: 25px; position: relative; }
+
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-size: 0.75em; 
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #000;
+            background: #fff;
+            color: #000;
+            outline: none;
+            font-weight: 600;
+        }
+
+        input:focus, textarea:focus { background: #f0f0f0; }
+
+        .error-text { color: #ff0000; font-size: 0.7em; margin-top: 5px; display: none; font-weight: bold; }
+
+        .invalid { border: 2px solid #ff0000 !important; }
+
+        .pwd-toggle { position: absolute; right: 15px; top: 38px; cursor: pointer; color: #000; }
+
+        .btn-main {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #000;
+            background: #000;
+            color: #fff;
+            font-weight: 900;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.2s;
+        }
+
+        .btn-main:hover { background: #fff; color: #000; }
+
+        .table-section { width: 100%; max-width: 900px; }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #000;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons { display: flex; gap: 10px; }
+
+        .btn-util {
+            background: #fff;
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.7em;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .btn-util:hover { background: #000; color: #fff; }
+
+        table { width: 100%; border-collapse: collapse; }
+        
+        th, td { border: 2px solid #000; padding: 12px; text-align: left; font-size: 0.85em; }
+
+        th { background-color: #000; color: #fff; text-transform: uppercase; }
+
+        tr:nth-child(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Registration</h2>
+    <form id="regForm" novalidate>
+        <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="firstName" placeholder="Min 6 alphabets">
+            <div id="firstNameError" class="error-text">Required: Min 6 Alphabets</div>
+        </div>
+        <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="lastName" placeholder="Required">
+            <div id="lastNameError" class="error-text">Required Field</div>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Min 6 characters">
+            <i class="fa-solid fa-eye pwd-toggle" id="togglePass"></i>
+            <div id="passwordError" class="error-text">Must be 6+ characters</div>
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="name@domain.com">
+            <div id="emailError" class="error-text">Invalid Email Address</div>
+        </div>
+        <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="text" id="mobile" maxlength="10" placeholder="10 Digits">
+            <div id="mobileError" class="error-text">10 Digits Required</div>
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <textarea id="address" rows="2" placeholder="Full Details"></textarea>
+            <div id="addressError" class="error-text">Required Field</div>
+        </div>
+        <button type="submit" class="btn-main">Submit & Save</button>
+    </form>
+</div>
+
+<div class="table-section">
+    <div class="table-header">
+        <h3>Stored Records</h3>
+        <div class="action-buttons">
+            <button class="btn-util" onclick="exportCSV()">Export CSV</button>
+            <button class="btn-util" style="border-color: red; color: red;" onclick="clearData()">Clear All</button>
+        </div>
+    </div>
+    <table id="userTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    const form = document.getElementById('regForm');
+    const tableBody = document.getElementById('tableBody');
+    const patterns = {
+        firstName: /^[A-Za-z]{6,}$/,
+        email: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        mobile: /^[0-9]{10}$/
+    };
+
+    function loadTable() {
+        const data = JSON.parse(localStorage.getItem('user_registry')) || [];
+        tableBody.innerHTML = '';
+        data.forEach(user => {
+            const row = `<tr>
+                <td>${user.firstName} ${user.lastName}</td>
+                <td>${user.email}</td>
+                <td>${user.mobile}</td>
+                <td>${user.address}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function exportCSV() {
+        const data = JSON.parse(localStorage.getItem('user_registry')) || [];
+        if (data.length === 0) return alert("No data to export");
+
+        let csvContent = "data:text/csv;charset=utf-8,Name,Email,Mobile,Address\n";
+        data.forEach(u => {
+            csvContent += `${u.firstName} ${u.lastName},${u.email},${u.mobile},"${u.address.replace(/\n/g, " ")}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "registry_data.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+
+    function clearData() {
+        if(confirm("Permanently delete all records?")) {
+            localStorage.removeItem('user_registry');
+            loadTable();
+        }
+    }
+
+    function validate(input, regex) {
+        const errorDiv = document.getElementById(input.id + 'Error');
+        let isValid = (input.id === 'lastName' || input.id === 'address') 
+            ? input.value.trim().length > 0 
+            : (input.id === 'password' ? input.value.length >= 6 : regex.test(input.value));
+
+        input.classList.toggle('invalid', !isValid);
+        errorDiv.style.display = isValid ? 'none' : 'block';
+        return isValid;
+    }
+
+    document.getElementById('togglePass').addEventListener('click', function() {
+        form.password.type = (form.password.type === 'password') ? 'text' : 'password';
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v1 = validate(form.firstName, patterns.firstName);
+        const v2 = validate(form.lastName, null);
+        const v3 = validate(form.password, null);
+        const v4 = validate(form.email, patterns.email);
+        const v5 = validate(form.mobile, patterns.mobile);
+        const v6 = validate(form.address, null);
+
+        if (v1 && v2 && v3 && v4 && v5 && v6) {
+            const userData = {
+                firstName: form.firstName.value,
+                lastName: form.lastName.value,
+                email: form.email.value,
+                mobile: form.mobile.value,
+                address: form.address.value
+            };
+            let storedData = JSON.parse(localStorage.getItem('user_registry')) || [];
+            storedData.push(userData);
+            localStorage.setItem('user_registry', JSON.stringify(storedData));
+            
+            alert("SUCCESS: DATA COMMITTED.");
+            form.reset();
+            window.location.reload();
+        }
+    });
+
+    window.onload = loadTable;
+</script>
+</body>
+</html>
