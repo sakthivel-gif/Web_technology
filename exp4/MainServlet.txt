@@ -1,0 +1,42 @@
+package com.demo;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+import java.io.*;
+
+@WebServlet("/UserServlet")
+
+public class UserServlet extends HttpServlet {
+
+protected void doPost(HttpServletRequest request,
+HttpServletResponse response)
+throws ServletException, IOException {
+
+response.setContentType("text/html");
+
+PrintWriter out = response.getWriter();
+
+String username = request.getParameter("username");
+String age = request.getParameter("age");
+
+out.println("<html>");
+out.println("<body style='font-family:Arial;text-align:center;background:#f4f4f4;'>");
+
+out.println("<div style='margin-top:120px;background:white;padding:30px;border-radius:10px;width:350px;margin-left:auto;margin-right:auto;box-shadow:0 5px 15px rgba(0,0,0,0.2);'>");
+
+out.println("<h2>User Details</h2>");
+
+out.println("<p><b>Name:</b> " + username + "</p>");
+out.println("<p><b>Age:</b> " + age + "</p>");
+
+out.println("<a href='form.html'>Go Back</a>");
+
+out.println("</div>");
+
+out.println("</body>");
+out.println("</html>");
+
+}
+
+}
