@@ -1,0 +1,28 @@
+package com.demo;
+
+import java.io.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+
+@WebServlet("/StudentServlet")
+public class StudentServlet extends HttpServlet {
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+
+response.setContentType("text/html");
+
+PrintWriter out = response.getWriter();
+
+String name = request.getParameter("name");
+String age = request.getParameter("age");
+String course = request.getParameter("course");
+
+out.println("<h2>Student Details</h2>");
+out.println("Name: " + name + "<br>");
+out.println("Age: " + age + "<br>");
+out.println("Course: " + course);
+
+}
+}
