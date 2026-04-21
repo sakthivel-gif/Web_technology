@@ -1,0 +1,37 @@
+package com.demo;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+import java.io.*;
+
+@WebServlet("/DashboardServlet")
+public class DashboardServlet extends HttpServlet {
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+
+HttpSession session = request.getSession(false);
+
+if(session == null){
+response.sendRedirect("login.html");
+return;
+}
+
+String user = (String) session.getAttribute("user");
+String loginTime = (String) session.getAttribute("loginTime");
+
+PrintWriter out = response.getWriter();
+
+out.println("<html><body style='font-family:Arial'>");
+
+out.println("<h2>Welcome " + user + "</h2>");
+out.println("<p><b>Login Time:</b> " + loginTime + "</p>");
+out.println("<p>Session is active</p>");
+
+out.println("<a href='LogoutServlet'>Logout</a>");
+
+out.println("</body></html>");
+
+}
+}

@@ -1,0 +1,38 @@
+package com.demo;
+
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+
+String username = request.getParameter("username");
+String password = request.getParameter("password");
+
+if(username.equals("admin") && password.equals("1234")){
+
+HttpSession session = request.getSession();
+
+session.setAttribute("user", username);
+
+String loginTime = LocalDateTime.now()
+.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+
+session.setAttribute("loginTime", loginTime);
+
+response.sendRedirect("DashboardServlet");
+
+}else{
+
+response.getWriter().println("<h3>Invalid Login</h3>");
+}
+
+}
+}
