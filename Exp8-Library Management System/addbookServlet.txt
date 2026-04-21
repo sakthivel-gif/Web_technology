@@ -1,0 +1,42 @@
+package com.library.servlet;
+
+import java.io.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.WebServlet;
+import java.sql.*;
+
+@WebServlet("/addbook")
+public class AddBookServlet extends HttpServlet {
+
+ protected void doPost(HttpServletRequest request, HttpServletResponse response)
+ throws ServletException, IOException {
+
+  String title = request.getParameter("title");
+  String author = request.getParameter("author");
+  String price = request.getParameter("price");
+
+  try{
+   Class.forName("com.mysql.cj.jdbc.Driver");
+
+   Connection con = DriverManager.getConnection(
+   "jdbc:mysql://localhost:3306/library_db",
+   "root",
+   "YOUR_PASSWORD");
+
+   PreparedStatement ps = con.prepareStatement(
+   "INSERT INTO books(title,author,price) VALUES(?,?,?)");
+
+   ps.setString(1,title);
+   ps.setString(2,author);
+   ps.setDouble(3,Double.parseDouble(price));
+
+   ps.executeUpdate();
+
+   response.sendRedirect("books");
+
+  }catch(Exception e){
+   e.printStackTrace();
+  }
+ }
+}
